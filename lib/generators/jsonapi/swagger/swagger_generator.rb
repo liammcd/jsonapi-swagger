@@ -66,7 +66,7 @@ module Jsonapi
     end
 
     def route_resouces
-      resouces_name.tr('_', '-')
+      resouces_name.underscore.tr('_', '-')
     end
 
     def model_class_name
