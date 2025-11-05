@@ -88,10 +88,11 @@
     def relationships_properties
       {}.tap do |relat_props|
         relationships.each do |relation_name, relation|
+          key = relation_name.to_s.tr('_','-') # <-- transform to kebab-case
           relation_name_camelize = relation_name.to_s.camelize
-            relat_props[relation_name] = {
-              type: :object,
-              properties: {
+          relat_props[key] = {
+            type: :object,
+            properties: {
               links: {
                 type: :object,
                 properties: {
@@ -110,8 +111,9 @@
     def create_relationships_properties
       {}.tap do |relat_props|
         relationships.each do |relation_name, relation|
+          key = relation_name.to_s.tr('_','-') # <-- transform to kebab-case
           relation_name_camelize = relation_name.to_s.camelize
-          relat_props[relation_name] = {
+          relat_props[key] = {
             type: :object,
             properties: {
               data: {
@@ -119,7 +121,7 @@
                 items: {
                   type: :object,
                   properties: {
-                    type: { type: :string, default: relation.table_name },
+                    type: { type: :string, default: relation.table_name.tr('_','-') }, # <-- also transform type
                     id: { type: :string, description: "#{relation_name_camelize} ID" },
                   },
                 },
@@ -128,11 +130,12 @@
             },
             description: tt(:related_ids, model: relation_name_camelize)
           }
+    
           if relation.try(:belongs_to?)
-            relat_props[relation_name][:properties][:data] = {
+            relat_props[key][:properties][:data] = {
               type: :object,
               properties: {
-                type: { type: :string, default: relation.table_name },
+                type: { type: :string, default: relation.table_name.tr('_','-') },
                 id: { type: :string, description: "#{relation_name_camelize} ID" },
               },
               description: tt(:related_id, model: relation_name_camelize)
