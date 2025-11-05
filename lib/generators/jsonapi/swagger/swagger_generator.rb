@@ -62,11 +62,11 @@ module Jsonapi
     end
 
     def resouces_name
-      model_class_name.pluralize.tr('_', '-')
+      model_class_name.pluralize
     end
 
     def route_resouces
-      resouces_name.tableize
+      resouces_name.tr('_', '-')
     end
 
     def model_class_name
