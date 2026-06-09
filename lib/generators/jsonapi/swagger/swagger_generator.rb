@@ -66,7 +66,7 @@ module Jsonapi
     end
 
     def route_resouces
-      resouces_name.tableize
+      resouces_name.underscore.tr('_', '-')
     end
 
     def model_class_name
@@ -150,8 +150,14 @@ module Jsonapi
     end
 
     def relation_table_name(relation)
-      return relation.class_name.tableize if relation.respond_to?(:class_name)
-      return relation.name if relation.respond_to?(:name)
+      name = if relation.respond_to?(:class_name)
+        relation.class_name.tableize
+      else
+        relation.name
+      end
+  
+      # convert snake_case to kebab-case
+      name.tr('_', '-')
     end
 
     def t(key, options={})
